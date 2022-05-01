@@ -25,12 +25,29 @@ async function run() {
             res.send(product);
         })
 
-        app.get('/products/:id', async (req, res) => {
+        // app.get('/products/:id', async (req, res) => {
+        //     const id = req.params.id;
+        //     const query = { _id: ObjectId(id) }
+        //     const product = await productsCollection.findOne(query)
+        //     res.send(product);
+        // })
+
+        // update products
+        app.put('/products/:id', async (req, res) => {
             const id = req.params.id;
-            const query = { _id: ObjectId(id) }
-            const product = await productsCollection.findOne(query)
-            res.send(product);
+            const updateProduct = req.body;
+            const filter = { _id: ObjectId(id) }
+            const options = { upsert: true };
+            const updatedDoc = {
+                $set: {
+                    quantity: updateProduct.quantity
+                }
+            }
+            const result = await productsCollection.updateOne(filter, updatedDoc, options)
+            res.send(result)
         })
+
+
 
 
         app.post('/products', async (req, res) => {
